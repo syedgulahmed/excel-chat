@@ -1,18 +1,29 @@
 package com.example.excel_chat;
 
-import org.apache.poi.ss.usermodel.DataFormatter;
-import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.apache.poi.ss.usermodel.*;
+
+import org.springframework.ai.chat.client.ChatClient;
 
 import java.io.IOException;
 
 @RestController
 public class ExcelChatController {    
     
-    @GetMapping("/")
+    private final ChatClient chatClient;
+
+    public ExcelChatController(ChatClient.Builder builder) {
+        this.chatClient = builder.build();
+    }
+
+    @PostMapping("/chat")
+    public String chat(@RequestBody String message) {
+        return chatClient.prompt(message).call().content();
+    }
+
+    @GetMapping("/hello")
     public String excelChat() {
         return "Hello, World!";
     }
@@ -34,5 +45,4 @@ public class ExcelChatController {
         workbook.close();
         return out.toString();
     }
-    
 }

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Excel Chat</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <h1>Excel Chat</h1>
+
+  <div id="output"></div>
+
+  <div class="controls">
+    <input type="file" id="fileInput" accept=".xlsx,.xls" />
+    <button onclick="upload()">Upload</button>
+  </div>
+
+  <div class="controls">
+    <input type="text" id="input" placeholder="Type a message..." />
+    <button onclick="send()">Send</button>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
