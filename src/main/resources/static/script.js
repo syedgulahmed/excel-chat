@@ -10,50 +10,32 @@ function addMessage(who, text) {
   output.scrollTop = output.scrollHeight;
 }
 
-async function upload() {
+async function analyze() {
+  const message = input.value.trim();
   const file = fileInput.files[0];
-  if (!file) {
-    addMessage('error', 'Please choose a file first');
+
+  if (!message && !file) {
+    addMessage('error', 'Please enter a message or choose a file');
     return;
   }
 
-  addMessage('system', `Uploading "${file.name}"...`);
+  // Show user's input in chat
+  if (message) addMessage('user', message);
+  if (file) addMessage('system', `Uploading "${file.name}"...`);
 
+  // Build the request
   const formData = new FormData();
-  formData.append('file', file);
+  if (message) formData.append('prompt', message);
+  if (file) formData.append('file', file);
+
+  // Clear inputs immediately
+  input.value = '';
+  fileInput.value = '';
 
   try {
-    const response = await fetch('/upload', {
+    const response = await fetch('/api/analyze', {
       method: 'POST',
       body: formData
-    });
-
-    if (!response.ok) {
-      addMessage('error', `Server returned ${response.status}`);
-      return;
-    }
-
-    const text = await response.text();
-    addMessage('system', `Received content from "${file.name}":`);
-    addMessage('bot', text);
-    fileInput.value = '';
-  } catch (err) {
-    addMessage('error', 'Upload failed: ' + err.message);
-  }
-}
-
-async function send() {
-  const message = input.value.trim();
-  if (!message) return;
-
-  addMessage('user', message);
-  input.value = '';
-
-  try {
-    const response = await fetch('/chat', {
-      method: 'POST',
-      headers: { 'Content-Type': 'text/plain' },
-      body: message
     });
 
     if (!response.ok) {
